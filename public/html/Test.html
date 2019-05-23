@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>test</title>
+		<style>
+			.result {
+			            margin-left: 20px;/* margin-left 属性设置元素的左外边距。 */
+			            border: 1px solid black;/* 边框粗细及颜色 */
+			            height: 220px;/* 设置整体的高度 */
+						width: 220px;
+			            overflow: scroll;/* overflow 属性规定当内容溢出元素框时发生的事情,scroll	如果内容被修剪，则给出滑动栏。*/
+			            display: block;/* block	此元素将显示为块级元素，此元素前后会带有换行符。 */
+			            margin-top: 10px;
+			            padding: 20px;
+			            display: none;
+			        }
+		</style>
+	</head>
+	<body>
+		<div class="result" id="r1">
+			<b style="font-family:宋体" <!-- font-family 规定元素的字体系列。 -->弧段表</b>
+		</div>
+		<div>
+			<canvas style="margin-left:100px;border:1px solid #000;margin-top:10px"></canvas>
+	    </div>
+		<script>
+			document.getElementById('r1').style.display = "block";
+			document.getElementById('r1').innerHTML = "面";
+		</script>
+	</body>
+</html>

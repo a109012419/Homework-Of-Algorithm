@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>地图符号</title>
+		<meta charset="UTF-8">
+		<style>
+			.tableReport-button {
+       display: inline-block;
+       position: relative;
+       /*位置是相对的*/
+       top: 5px;
+       left: 0px;
+       /*向button左侧填充像素*/
+       overflow: hidden;
+       text-align: center;
+       width: auto;
+       background-color: #0056C0;
+       border: solid 1px #ddd;
+       border-radius: 4px;
+       padding: 5px 15px;/*padding 简写属性在一个声明中设置所有内边距属性*/
+       font-size: 12px;/*控制按钮整体（包括字）的尺寸大小*/
+       font-weight: normal;
+       line-height: 19px;
+       color: #fff;
+       text-decoration: none;
+   }
+   .file {
+    position: relative;/* 生成相对定位的元素，相对于其正常位置进行定位。 */
+    display: inline-block;
+    background: #D0EEFF;/* 背景颜色 */
+    border: 1px solid #99D3F5;/* 边框样式 */
+    border-radius: 4px;
+    padding: 4px 12px;/* padding 简写属性在一个声明中设置所有内边距属性,依次为上右下左 */
+    overflow: hidden;/* overflow 属性规定当内容溢出元素框时发生的事情,hidden	内容会被修剪，并且其余内容是不可见的。*/
+    color: #1E88C7;
+    text-decoration: none;/* text-decoration 属性规定添加到文本的修饰,如下划线 */
+    text-indent: 0px;/* 首行缩进元素 */
+    line-height: 20px;/* 整体框高 */
+}
+.file input {
+    position: absolute;
+    font-size: 100px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+}</style>
+	<body>
+		<br>
+		<a class="file">
+			<input type="file" id="input1" name="" onchange="input1()">选择Budling数据
+		</a>
+		<a class="file">
+			<input type="file" id="input2" name="" onchange="input2()">选择Vegrgn数据
+		</a>
+		<div>
+			<input class="tableReport-button" type="button" value="绘制地图" onclick="draw()">
+		</div>
+		<div>
+			<canvas id="canv" width="900px" height="2000px"></canvas>
+		</div>
+
+		<script>
+			function Point(x, y) {
+				this.x = x;
+				this.y = y;
+			}
+			var V = new Array();
+			var B = new Array();
+
+			//读取Budling数据
+			function input1() {
+				var inputfile = document.getElementById("input1").files[0];
+				var reader = new FileReader();
+				reader.readAsText(inputfile);
+				reader.onload = function(e) {
+					var text = reader.result.split("\r\n");
+					var l = text.length;
+					var judge = 0;
+					var N = 0;
+					B[0] = new Array();
+					for (i = 1; i < l - 1; i++) {
+						if (text[i] != "END") {
+							if (text[i].length != 2 && text[i].length != 3 && text[i].length != 1) {
+								var x;
+								var y;
+								x = Number(text[i].split(",")[0].slice(3)) * 3;
+								y = Number(text[i].split(",")[1].slice(4)) * 3;
+								B[N][judge] = new Point(x, y);
+								judge = judge + 1;
+							}
+						} else {
+							judge = 0;
+							N = N + 1;
+							B[N] = new Array();
+						}
+					}
+					console.log(B[0][0]);
+					//console.log(B[0][0].x.slice(3));
+					//共0-479行数据
+				}
+			}
+			//读取Vegrgn数据
+			function input2() {
+				var inputfile = document.getElementById("input2").files[0];
+				var reader = new FileReader();
+				reader.readAsText(inputfile);
+				reader.onload = function(e) {
+					var text = reader.result.split("\r\n");
+					var l = text.length;
+					var judge = 0;
+					var N = 0;
+					V[0] = new Array();
+					for (i = 1; i < l - 1; i++) {
+						if (text[i] != "END") {
+							if (text[i].length != 2 && text[i].length != 3 && text[i].length != 1) {
+								var x;
+								var y;
+								x = Number(text[i].split(",")[0].slice(3)) * 3;
+								y = Number(text[i].split(",")[1].slice(4)) * 3;
+								V[N][judge] = new Point(x, y);
+								judge = judge + 1;
+							}
+						} else {
+							judge = 0;
+							N = N + 1;
+							V[N] = new Array();
+						}
+					}
+					//共0-154行数据
+				}
+			}
+
+			function draw() {
+				var canvas = document.getElementById("canv");
+				var cxt = canvas.getContext("2d");
+				cxt.clearRect(0, 0, 900, 2000);
+				cxt.beginPath();
+				cxt.lineWidth = 2;
+				for (var i = 0; i < 480; i++) {
+					var l = B[i].length;
+					for (var j = 0; j < l - 1; j++) {
+						cxt.moveTo(B[i][j].x + 100, 1850 - B[i][j].y);
+						cxt.lineTo(B[i][j + 1].x + 100, 1850 - B[i][j + 1].y);
+					}
+				}
+				for (var i = 0; i < 155; i++) {
+					var l = V[i].length;
+					for (var j = 0; j < l - 1; j++) {
+						cxt.moveTo(V[i][j].x + 100, 1850 - V[i][j].y);
+						cxt.lineTo(V[i][j + 1].x + 100, 1850 - V[i][j + 1].y);
+					}
+				}
+				cxt.stroke();
+			}
+		</script>
+	</body>
+	</head>
+
+</html>

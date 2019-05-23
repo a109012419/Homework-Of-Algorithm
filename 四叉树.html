@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>矩阵四叉树M码（四进制）</title>
+		<meta charset="UTF-8">
+		<style>
+			.tableReport-button {
+			       display: inline-block;
+			       position: relative;
+			       /*位置是相对的*/
+			       top: 5px;
+			       left: 0px;
+			       /*向button左侧填充像素*/
+			       overflow: hidden;
+			       text-align: center;
+			       width: auto;
+			       background-color: #0056C0;
+			       border: solid 1px #ddd;
+			       border-radius: 4px;
+			       padding: 5px 15px;/*padding 简写属性在一个声明中设置所有内边距属性*/
+			       font-size: 14px;/*控制按钮整体（包括字）的尺寸大小*/
+			       font-weight: normal;
+			       line-height: 19px;
+			       color: #fff;
+			       text-decoration: none;
+			   }
+			   .file {
+			    position: relative;/* 生成相对定位的元素，相对于其正常位置进行定位。 */
+			    display: inline-block;
+			    background: #D0EEFF;/* 背景颜色 */
+			    border: 1px solid #99D3F5;/* 边框样式 */
+			    border-radius: 4px;
+			    padding: 4px 12px;/* padding 简写属性在一个声明中设置所有内边距属性,依次为上右下左 */
+			    overflow: hidden;/* overflow 属性规定当内容溢出元素框时发生的事情,hidden	内容会被修剪，并且其余内容是不可见的。*/
+			    color: #1E88C7;
+			    text-decoration: none;/* text-decoration 属性规定添加到文本的修饰,如下划线 */
+			    text-indent: 0px;/* 首行缩进元素 */
+			    line-height: 20px;/* 整体框高 */
+			}
+			.file input {
+			    position: absolute;
+			    font-size: 100px;
+			    right: 0;
+			    top: 0;
+			    opacity: 0;
+			}
+		</style>
+	<body>
+		<div>
+			<br>
+			<a class="file">
+				<input type="file" id="input" name="" onchange="input()">选择矩阵四叉树
+			</a>
+			<br>
+			<br>
+			<input class="tableReport-button" type="button" value="求取矩阵四叉树四进制M码" onclick="four()">
+		</div>
+
+		<script>
+			var A = new Array();
+			var B = new Array();
+			var BB = new Array();
+
+			function input() {
+				var inputfile = document.getElementById("input").files[0];
+				var reader = new FileReader();
+				reader.readAsText(inputfile);
+				reader.onload = function(e) {
+					var text = reader.result.split("\r\n");
+					var l = text.length;
+					for (var i = 0; i < l - 2; ++i) {
+						A[i] = new Array();
+						for (var j = 0; j < l - 2; ++j)
+							A[i][j] = text[i + 1].split(",")[j];
+					}
+				}
+			}
+
+			function four() {
+				for (var i = 0; i < 8; ++i) {
+					B[i] = new Array();
+					for (var j = 0; j < 8; ++j) {
+						var m = i.toString("2");
+						var n = j.toString("2");
+						B[i][j] = parseInt(m) * 2 + parseInt(n);
+					}
+				}
+				document.write("原始矩阵四叉树为" + "<br/>");
+				for (var i = 0; i < 8; ++i) {
+					document.write(A[i]);
+					document.write("<br/>");
+				}
+				document.write("四进制M码为" + "<br/>");
+				for (var i = 0; i < 8; ++i) {
+					document.write(B[i]);
+					document.write("<br/>");
+				}
+
+				checkcombine_four();
+				document.write("合并后的四进制M码为" + "<br/>");
+				for (var i = 0; i < 8; ++i) {
+					document.write(B[i]);
+					document.write("<br/>");
+				}
+			}
+
+			function judge_four(c) {
+				for (var i = 0; i < 4; i++) {
+					var w = 0;
+					for (var m = c[i][0]; m < c[i][0] + 2; m++)
+						for (var n = c[i][1]; n < c[i][1] + 1; n++)
+							w += eq(A[m][n], A[m][n + 1]);
+					if (w == 2) //4个值属性一样
+					{
+						for (var m = c[i][0]; m < c[i][0] + 2; m++)
+							for (var n = c[i][1]; n < c[i][1] + 2; n++) {
+								B[m][n] = B[(c[i][0])][(c[i][1])];
+							}
+					}
+				}
+			}
+
+			function eq(m, n) {
+				if (m == n)
+					return 1;
+				else
+					return 0;
+			}
+
+			function checkcombine_four() {
+				//第一层 
+				var c = new Array();
+				c[0] = new Array();
+				c[1] = new Array();
+				c[2] = new Array();
+				c[3] = new Array();
+				c[0][0] = 0;
+				c[0][1] = 0;
+				c[1][0] = 0;
+				c[1][1] = 4;
+				c[2][0] = 4;
+				c[2][1] = 0;
+				c[3][0] = 4;
+				c[3][1] = 4;
+				for (var i = 0; i < 4; i++) {
+					var w = 0;
+					for (var m = c[i][0]; m < 4; m++)
+						for (var n = c[i][1]; n < 3; n++)
+							w += eq(A[m][n], A[m][n + 1]);
+					if (w == 12) //16个值属性一样
+					{
+						for (var m = c[i][0]; m < c[i][0] + 4; m++)
+							for (var n = c[i][1]; n < c[i][1] + 4; ++n) {
+								var temp = parseInt(B[c[i][0]][c[i][1]]);
+								B[m][n] = temp;
+							}
+					}
+				}
+				//第二层
+				var d = new Array();
+				d[0] = new Array();
+				d[1] = new Array();
+				d[2] = new Array();
+				d[3] = new Array();
+				d[0][0] = 0, d[0][1] = 0;
+				d[1][0] = 0, d[1][1] = 2;
+				d[2][0] = 2, d[2][1] = 0;
+				d[3][0] = 2, d[3][1] = 2;
+				var e = new Array();
+				e[0] = new Array();
+				e[1] = new Array();
+				e[2] = new Array();
+				e[3] = new Array();
+				e[0][0] = 0, e[0][1] = 4;
+				e[1][0] = 0, e[1][1] = 6;
+				e[2][0] = 2, e[2][1] = 4;
+				e[3][0] = 2, e[3][1] = 6;
+				var f = new Array();
+				f[0] = new Array();
+				f[1] = new Array();
+				f[2] = new Array();
+				f[3] = new Array();
+				f[0][0] = 4, f[0][1] = 0;
+				f[1][0] = 4, f[1][1] = 2;
+				f[2][0] = 6, f[2][1] = 0;
+				f[3][0] = 6, f[3][1] = 2;
+				var g = new Array();
+				g[0] = new Array();
+				g[1] = new Array();
+				g[2] = new Array();
+				g[3] = new Array();
+				g[0][0] = 4, g[0][1] = 4;
+				g[1][0] = 4, g[1][1] = 6;
+				g[2][0] = 6, g[2][1] = 4;
+				g[3][0] = 6, g[3][1] = 6;
+				judge_four(d);
+				judge_four(e);
+				judge_four(f);
+				judge_four(g);
+			}
+		</script>
+	</body>
+	</head>
+</html>

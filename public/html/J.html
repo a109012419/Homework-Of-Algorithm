@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>吃饭睡觉打婧儿</title>
+</head>
+
+<body>
+    <p style="text-align:center"><canvas id="canvas1" height="600" width="600"></canvas></p>
+    <script language="javascript">
+        function hq() {
+            alert('婧儿是头猪！')
+            h2();
+        }
+        function hr() {
+            alert('婧儿是头猪')
+            ht();
+        }
+        function ht() {
+            alert('别生气嘛西西是头猪');
+            hy();
+        }
+        function hy() {
+            alert('我反悔了，婧儿才是猪');
+            hq();
+        }
+        function h2(){
+            alert('不闹了不闹了，西西给你画个大爱心');
+            love();
+        }
+        function love() {
+            var canvas = document.getElementById("canvas1");
+            var ctx = canvas.getContext("2d");
+            ctx.translate(300, 300); //sets center in the middle of the picture
+            drawHeart();
+
+            function drawHeart() {
+                ctx.beginPath();
+                ctx.moveTo(0, -100);
+                ctx.bezierCurveTo(120, -300, 300, -100, 200, 50);
+                ctx.lineTo(0, 250);
+                ctx.lineTo(-200, 50);
+                ctx.bezierCurveTo(-300, -100, -120, -300, 0, -100);
+                ctx.closePath();
+                ctx.fillStyle = "#ff0000";
+                ctx.fill();
+            }
+        }
+    </script>
+
+    <body onLoad="hr()">
+    </body>
+</body>
+
+</html>

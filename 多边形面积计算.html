@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>多边形面积计算</title>
+		<meta charset="UTF-8">
+		<style>
+			.tableReport-button {
+			       display:block;
+			       position: relative;/*位置是相对的*/
+			       top: 5px;
+			       left: 0px;/*向button左侧填充像素*/
+			       overflow: hidden;
+			       text-align: center;
+			       width: auto;
+			       background-color: #0056C0;
+			       border: solid 1px #ddd;
+			       border-radius: 4px;
+			       padding: 5px 15px;/*padding 简写属性在一个声明中设置所有内边距属性*/
+			       font-size: 15px;/*控制按钮整体（包括字）的尺寸大小*/
+			       font-weight: normal;
+			       line-height: 19px;
+			       color: #fff;
+			       text-decoration: none;
+			   }
+			   .file {
+			    position: relative;/* 生成相对定位的元素，相对于其正常位置进行定位。 */
+			    display: inline-block;
+			    background: #D0EEFF;/* 背景颜色 */
+			    border: 1px solid #99D3F5;/* 边框样式 */
+			    border-radius: 4px;
+			    padding: 4px 12px;/* padding 简写属性在一个声明中设置所有内边距属性,依次为上右下左 */
+			    overflow: hidden;/* overflow 属性规定当内容溢出元素框时发生的事情,hidden	内容会被修剪，并且其余内容是不可见的。*/
+			    color: #1E88C7;
+			    text-decoration: none;/* text-decoration 属性规定添加到文本的修饰,如下划线 */
+			    text-indent: 0px;/* 首行缩进元素 */
+			    line-height: 20px;/* 整体框高 */
+			}
+			.file input {
+			    position: absolute;
+			    font-size: 100px;
+			    right: 0;
+			    top: 0;
+			    opacity: 0;
+			}
+			.result {
+			            margin-left: 200px;/* margin-left 属性设置元素的左外边距。 */
+			            border: 1px solid black;/* 边框粗细及颜色 */
+			            height: 200px;/* 设置整体的高度 */
+						width: 500px;
+			            overflow: scroll;/* overflow 属性规定当内容溢出元素框时发生的事情,scroll	如果内容被修剪，则给出滑动栏。*/
+			            display: block;/* block	此元素将显示为块级元素，此元素前后会带有换行符。 */
+			            margin-top: 10px;
+			            padding: 20px;
+			            display: none;
+			        }
+			.div-inline{ 
+			    float:left;
+			} 
+		</style>
+
+	<body>
+		<div class='div-inline'>
+			<a class="file">
+				<input type="file" id="input" name="" onchange="input()">选择投影数据
+			</a>
+			<input class="tableReport-button" type="button" value="绘制江苏省地图" onclick="draw()">
+			<input class="tableReport-button" type="button" value="显示江苏省各地市面积" onclick="Area()">
+		</div>
+		<div class="result" id="r1">
+			<b style="font-family:宋体" <!-- font-family 规定元素的字体系列。 --></b>
+		</div>
+		<div>
+			<canvas id="canv" width="10000px" height="5000px"></canvas>
+		</div>
+
+		<script>
+			document.getElementById('r1').style.display = "block";
+			document.getElementById('r1').innerHTML = "江苏省地块面积："+"<br>";
+			function Point(x, y) {
+				this.x = x;
+				this.y = y;
+			}
+			var A = new Array();
+			var area = new Array();
+
+			//读取数据
+			function input() {
+				var inputfile = document.getElementById("input").files[0];
+				var reader = new FileReader();
+				reader.readAsText(inputfile);
+				reader.onload = function(e) {
+					var text = reader.result.split("\r\n");
+					var l = text.length;
+					var judge = 0;
+					var N = 0;
+					A[0] = new Array();
+					for (i = 1; i < l - 1; i++) {
+						if (text[i] != "END") {
+							if (text[i].length != 2 && text[i].length != 3 && text[i].length != 1) {
+								var x;
+								var y;
+								x = text[i].split(",")[0];
+								y = text[i].split(",")[1];
+								A[N][judge] = new Point(x, y);
+								judge = judge + 1;
+							}
+						} else {
+							judge = 0;
+							N = N + 1;
+							A[N] = new Array();
+						}
+					}
+					//共有0-17行坐标
+				}
+			}
+			//计算多边形面积
+			function computearea(i) {
+				var temp = 0;
+				var a = 0;
+				for (var j = 0; j < A[i].length; j++) {
+					a = (j + 1) % A[i].length;
+					temp += A[i][j].x * A[i][a].y;
+					temp -= A[i][j].y * A[i][a].x;
+				}
+				temp /= 2;
+				return Math.abs(temp);
+			}
+			//绘制地图
+			function draw() {
+				var canvas = document.getElementById("canv");
+				var cxt = canvas.getContext("2d");
+				cxt.clearRect(0, 0, canvas.width, canvas.height);
+				cxt.beginPath();
+				cxt.lineWidth = 2;
+				for (var i = 0; i < 18; i++) {
+					var l = A[i].length;
+					for (var j = 0; j < l - 1; j++) {
+						cxt.moveTo(A[i][j].x / 1000 - 12900, 4200 - A[i][j].y / 1000);
+						cxt.lineTo(A[i][j + 1].x / 1000 - 12900, 4200 - A[i][j + 1].y / 1000);
+					}
+				}
+				cxt.stroke();
+			}
+			//计算及显示江苏省十三块地市面积
+			function Area() {
+				var temp = 0;
+				for (var i = 0; i < 18; ++i) {
+					if (i >= 1 && i <= 6) {
+						temp = temp + computearea(i);
+						if (i == 6)
+							area.push(temp);
+					} else
+						area.push(computearea(i));
+				}
+				for (var i = 0; i < 13; ++i)
+				document.getElementById('r1').innerHTML += "第" + (i + 1) + "块地市的面积为"+area[i]+"<br>";
+			}
+		</script>
+	</body>
+	</head>
+
+</html>
