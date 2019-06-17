@@ -1,4 +1,4 @@
-# Homework-Of-Algorithm
+# Gis算法基础 10170317-芮旭东
 该仓库用于提交GIS算法基础课程作业
 以下是作业集合连接,供张老师查阅  
 跳马：https://a109012419.github.io/Homework-Of-Algorithm/跳马.html  
