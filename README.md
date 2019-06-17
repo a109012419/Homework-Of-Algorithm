@@ -7,5 +7,5 @@
 多边形面积计算：https://a109012419.github.io/Homework-Of-Algorithm/多边形面积计算.html  
 道格拉斯-普克：https://a109012419.github.io/Homework-Of-Algorithm/道格拉斯-普克.html  
 地图符号：https://a109012419.github.io/Homework-Of-Algorithm/地图符号.html  
-四叉树：https://a109012419.github.io/Homework-Of-Algorithm/四叉树.html   
+四叉树：https://a109012419.github.io/Homework-Of-Algorithm/四叉树.html  
 左转算法：https://a109012419.github.io/Homework-Of-Algorithm/左转算法.html  
